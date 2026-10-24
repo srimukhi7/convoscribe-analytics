@@ -1,0 +1,8 @@
+# Fake data generation
+faker
+pandas
+numpy
+
+# Database and transformations
+duckdb
+dbt-duckdb
