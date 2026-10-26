@@ -6,3 +6,6 @@ numpy
 # Database and transformations
 duckdb
 dbt-duckdb
+
+# Dashboard
+streamlit

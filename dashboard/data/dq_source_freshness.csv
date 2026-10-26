@@ -1,0 +1,4 @@
+table_name,latest_event_at,latest_ingested_at,hours_since_latest_event
+raw_meetings,2026-09-30 18:56:33.000000,2026-10-05 08:03:43.146341,5
+raw_feature_events,2026-09-30 23:59:33.662337,2026-10-05 14:10:00.360592,0
+raw_subscription_events,2026-09-30 23:16:56.000000,2026-09-30 23:17:26.000000,0

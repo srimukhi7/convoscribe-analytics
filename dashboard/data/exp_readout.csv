@@ -1,0 +1,2 @@
+experiment_name,control_assigned,treatment_assigned,control_mature_users,treatment_mature_users,control_converted,treatment_converted,control_rate,treatment_rate,absolute_lift,relative_lift,lift_ci_low,lift_ci_high,z_statistic,is_significant_5pct,srm_chi_square,has_sample_ratio_mismatch,recommendation
+upgrade_prompt_v2,1633,1625,1495,1495,99,151,0.0662,0.101,0.0348,0.5253,0.015,0.0546,3.436,True,0.02,False,Ship treatment: significant improvement

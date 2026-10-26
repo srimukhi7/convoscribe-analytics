@@ -1,0 +1,12 @@
+check_name,table_name,issue,measured_on,rows_affected,total_rows,pct_affected
+raw_users: Duplicate rows removed,raw_users,Duplicate rows removed,raw,50,5050,0.99
+raw_users: Missing emails,raw_users,Missing emails,staged,83,5000,1.66
+raw_meetings: Duplicate rows removed,raw_meetings,Duplicate rows removed,raw,1268,85802,1.48
+raw_meetings: Zero or negative duration (excluded from marts),raw_meetings,Zero or negative duration (excluded from marts),staged,703,84534,0.83
+raw_meetings: Unknown user_id (excluded from marts),raw_meetings,Unknown user_id (excluded from marts),staged,415,84534,0.49
+raw_meetings: Arrived more than 1 hour late,raw_meetings,Arrived more than 1 hour late,staged,838,84534,0.99
+raw_feature_events: Duplicate rows removed,raw_feature_events,Duplicate rows removed,raw,1099,110997,0.99
+raw_feature_events: Non-standard event name (standardized),raw_feature_events,Non-standard event name (standardized),raw,4411,110997,3.97
+raw_feature_events: Arrived more than 1 hour late,raw_feature_events,Arrived more than 1 hour late,staged,1077,109898,0.98
+raw_subscription_events: Duplicate rows removed,raw_subscription_events,Duplicate rows removed,raw,8,835,0.96
+raw_subscription_events: Arrived more than 1 hour late,raw_subscription_events,Arrived more than 1 hour late,staged,10,827,1.21
