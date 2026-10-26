@@ -1,22 +1,30 @@
-# Project identity. "name" must match the key under "models" below.
 name: convoscribe_dbt
 version: "1.0.0"
 config-version: 2
 
-# Which connection (from profiles.yml) this project uses
 profile: convoscribe
 
-# Where dbt looks for each kind of file
 model-paths: ["models"]
 test-paths: ["tests"]
 macro-paths: ["macros"]
 
-# Folders that "dbt clean" deletes
 clean-targets: ["target", "dbt_packages"]
 
-# Default settings per folder. The + prefix marks a config (not a sub-folder).
+# Project variables: metric definitions live here, once.
+# Models read them with var('name').
+vars:
+  # The fixed "now" for our dataset. Never use current_date, so results are stable.
+  data_as_of: "2026-09-30 23:59:59"
+  # A user is "activated" with at least this many valid meetings...
+  activation_min_meetings: 3
+  # ...within this many days of signing up.
+  activation_window_days: 14
+
 models:
   convoscribe_dbt:
     staging:
-      +materialized: view     # staging models are saved queries
-      +schema: staging        # created in a database schema called "staging"
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate

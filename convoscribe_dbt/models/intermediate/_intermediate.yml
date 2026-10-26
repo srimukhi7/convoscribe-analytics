@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: int_subscription_periods
+    description: "One row per paid subscription period, built from plan-change events. A null period_end_at means the period is still active."
+    columns:
+      - name: subscription_period_id
+        description: "Primary key: user_id plus the period number."
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+      - name: plan
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["pro", "business"]
+      - name: started_by_event
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["started", "upgraded", "downgraded", "reactivated"]
+      - name: ended_by_event
+        description: "Null while the period is still active."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["upgraded", "downgraded", "cancelled"]
+
+  - name: int_user_activation
+    description: "One row per user: meetings in the activation window and whether they activated. Rates should only use users where is_activation_window_complete is true."
+    columns:
+      - name: user_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: meetings_in_activation_window
+        data_tests: [not_null]
+      - name: is_activated
+        data_tests: [not_null]
+      - name: is_activation_window_complete
+        data_tests: [not_null]
