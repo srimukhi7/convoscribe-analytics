@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: dim_users
+    description: "Source of truth for users. One row per user with profile, activation, usage and subscription status."
+    columns:
+      - name: user_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: current_plan
+        description: "Plan on the data cutoff date: free, pro or business."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["free", "pro", "business"]
+      - name: is_activated
+        description: "True if the user had enough valid meetings in the activation window after signup. Only meaningful when is_activation_window_complete is true."
+        data_tests: [not_null]
+      - name: is_activation_window_complete
+        description: "False for users who signed up too recently to have had the full activation window."
+        data_tests: [not_null]
+      - name: is_currently_paid
+        description: "True if the user has an active paid period on the data cutoff date."
+        data_tests: [not_null]
+      - name: workspace_id
+        description: "Null for solo users."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_workspaces')
+                field: workspace_id
+
+  - name: dim_workspaces
+    description: "Source of truth for team workspaces, with member counts rolled up from dim_users."
+    columns:
+      - name: workspace_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: fct_meetings
+    description: "One row per valid meeting. Meetings with invalid durations or unknown users are excluded (see the reconciliation test)."
+    columns:
+      - name: meeting_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_users')
+                field: user_id
+      - name: platform
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["zoom", "google_meet", "microsoft_teams", "in_person"]
+
+  - name: fct_subscriptions
+    description: "One row per paid subscription period, with an end date or the data cutoff for active periods."
+    columns:
+      - name: subscription_period_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_users')
+                field: user_id
+      - name: plan
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["pro", "business"]
+
+  - name: fct_daily_activity
+    description: "One row per user per day with a meeting or AI feature use."
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_users')
+                field: user_id
+      - name: activity_date
+        data_tests: [not_null]
