@@ -16,3 +16,6 @@ logs/
 # Editor and OS files
 .vscode/
 Thumbs.db
+
+# dbt local user id file (auto-generated, not part of the project)
+.user.yml
