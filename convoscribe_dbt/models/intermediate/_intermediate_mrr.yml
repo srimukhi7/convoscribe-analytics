@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_months
+    description: "Date spine: one row per calendar month from the first signup to the data cutoff."
+    columns:
+      - name: month_start
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: int_user_monthly_mrr
+    description: "Each paying user's MRR at the end of each month. Users not paying at month end have no row."
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+      - name: mrr
+        data_tests: [not_null]

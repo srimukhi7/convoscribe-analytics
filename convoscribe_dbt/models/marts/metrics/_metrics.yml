@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: metrics_weekly_active_users
+    description: "Weekly active users: distinct users with at least one valid meeting in the week (weeks start Monday). Use is_complete_week to hide the partial first and last weeks."
+    columns:
+      - name: week_start
+        description: "Primary key: the Monday of the week."
+        data_tests: [unique, not_null]
+      - name: weekly_active_users
+        data_tests: [not_null]
+
+  - name: metrics_activation
+    description: "Activation rate by signup week. The rate uses mature signups only and is blank when a week has none."
+    columns:
+      - name: signup_week
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: metrics_conversion
+    description: "Free-to-paid conversion by signup month, within the conversion window, using mature signups only."
+    columns:
+      - name: signup_month
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: metrics_mrr_monthly
+    description: "Month-end MRR with a bridge (new, expansion, contraction, churned), logo churn and net revenue retention."
+    columns:
+      - name: month_start
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: ending_mrr
+        data_tests: [not_null]
+
+  - name: metrics_cohort_retention
+    description: "Share of each signup-month cohort with at least one valid meeting N months after signup."
+    columns:
+      - name: cohort_month
+        data_tests: [not_null]
+      - name: months_since_signup
+        data_tests: [not_null]

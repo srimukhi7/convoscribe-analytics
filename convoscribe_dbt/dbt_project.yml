@@ -11,14 +11,15 @@ macro-paths: ["macros"]
 clean-targets: ["target", "dbt_packages"]
 
 # Project variables: metric definitions live here, once.
-# Models read them with var('name').
 vars:
-  # The fixed "now" for our dataset. Never use current_date, so results are stable.
+  # The fixed "now" for our dataset. Never use current_date.
   data_as_of: "2026-09-30 23:59:59"
-  # A user is "activated" with at least this many valid meetings...
+  # Activated = at least this many valid meetings...
   activation_min_meetings: 3
   # ...within this many days of signing up.
   activation_window_days: 14
+  # Conversion = first paid plan within this many days of signing up.
+  conversion_window_days: 30
 
 models:
   convoscribe_dbt:
@@ -29,6 +30,8 @@ models:
       +materialized: view
       +schema: intermediate
     marts:
-      +materialized: table       # marts are stored tables, not views
+      +materialized: table
       core:
         +schema: marts
+      metrics:
+        +schema: metrics
