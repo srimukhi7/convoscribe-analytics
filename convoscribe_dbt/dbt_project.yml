@@ -10,16 +10,15 @@ macro-paths: ["macros"]
 
 clean-targets: ["target", "dbt_packages"]
 
-# Project variables: metric definitions live here, once.
+# Project variables: metric and quality definitions live here, once.
 vars:
-  # The fixed "now" for our dataset. Never use current_date.
-  data_as_of: "2026-09-30 23:59:59"
-  # Activated = at least this many valid meetings...
+  data_as_of: "2026-09-30 23:59:59"   # fixed "now" for the dataset
   activation_min_meetings: 3
-  # ...within this many days of signing up.
   activation_window_days: 14
-  # Conversion = first paid plan within this many days of signing up.
   conversion_window_days: 30
+  experiment_window_days: 14          # A/B test: paid within N days of assignment
+  anomaly_z_threshold: 4              # flag when |z-score| is above this...
+  anomaly_min_pct_change: 0.25        # ...and the change vs baseline is above 25%
 
 models:
   convoscribe_dbt:
@@ -35,3 +34,7 @@ models:
         +schema: marts
       metrics:
         +schema: metrics
+      quality:
+        +schema: quality
+      experiments:
+        +schema: experiments

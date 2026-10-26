@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: dq_source_freshness
+    description: "Hours between the newest event in each raw table and the data cutoff."
+    columns:
+      - name: table_name
+        data_tests: [unique, not_null]
+      - name: hours_since_latest_event
+        description: "Must be between 0 and 72 hours, otherwise the source is considered stale."
+        data_tests:
+          - not_null
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 72
+
+  - name: dq_daily_anomalies
+    description: "Daily metric values scored against a same-weekday baseline. is_anomaly flags days with both a large z-score and a large percentage change."
+    columns:
+      - name: anomaly_key
+        description: "Primary key: metric name plus date."
+        data_tests: [unique, not_null]
+      - name: metric_name
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["meetings", "active_users", "signups"]
+      - name: is_anomaly
+        data_tests: [not_null]
+
+  - name: dq_scorecard
+    description: "One row per data quality check, with the number and percentage of rows affected."
+    columns:
+      - name: check_name
+        data_tests: [unique, not_null]
+      - name: rows_affected
+        data_tests: [not_null]
