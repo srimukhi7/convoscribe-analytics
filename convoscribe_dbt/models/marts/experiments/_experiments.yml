@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: exp_variant_results
+    description: "Conversion by experiment variant, using mature users only, with 95% confidence intervals."
+    columns:
+      - name: variant
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["control", "treatment"]
+      - name: conversion_rate
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+  - name: exp_readout
+    description: "One row per experiment: lift, significance, sample ratio check and a plain-English recommendation."
+    columns:
+      - name: experiment_name
+        data_tests: [unique, not_null]
+      - name: recommendation
+        data_tests: [not_null]
