@@ -1,0 +1,22 @@
+# Project identity. "name" must match the key under "models" below.
+name: convoscribe_dbt
+version: "1.0.0"
+config-version: 2
+
+# Which connection (from profiles.yml) this project uses
+profile: convoscribe
+
+# Where dbt looks for each kind of file
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+# Folders that "dbt clean" deletes
+clean-targets: ["target", "dbt_packages"]
+
+# Default settings per folder. The + prefix marks a config (not a sub-folder).
+models:
+  convoscribe_dbt:
+    staging:
+      +materialized: view     # staging models are saved queries
+      +schema: staging        # created in a database schema called "staging"

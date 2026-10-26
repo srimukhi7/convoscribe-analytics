@@ -1,0 +1,10 @@
+# The name must match "profile" in dbt_project.yml
+convoscribe:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # Path is relative to the folder you run dbt from (convoscribe_dbt)
+      path: ../data/convoscribe.duckdb
+      schema: main
+      threads: 4              # how many models dbt may build in parallel

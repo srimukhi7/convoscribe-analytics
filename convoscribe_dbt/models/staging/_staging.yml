@@ -1,0 +1,107 @@
+version: 2
+
+models:
+  - name: stg_users
+    description: "One clean row per user. Duplicates removed, emails standardized."
+    columns:
+      - name: user_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: signed_up_at
+        data_tests: [not_null]
+      - name: signup_source
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["organic", "paid_search", "referral", "partner"]
+
+  - name: stg_workspaces
+    description: "One clean row per team workspace."
+    columns:
+      - name: workspace_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: stg_meetings
+    description: "One row per meeting. Duplicates removed; bad rows flagged, not deleted."
+    columns:
+      - name: meeting_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+              config:
+                severity: warn   # known issue: unknown users, handled in the marts
+      - name: platform
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["zoom", "google_meet", "microsoft_teams", "in_person"]
+      - name: language_code
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["en", "es", "de", "fr", "pt"]
+
+  - name: stg_feature_events
+    description: "One row per AI feature use, with standardized event names."
+    columns:
+      - name: event_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: event_name
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["summary_viewed", "action_item_created", "transcript_shared", "ai_chat_used"]
+      - name: user_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+
+  - name: stg_subscription_events
+    description: "One row per paid-plan change."
+    columns:
+      - name: subscription_event_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: event_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["started", "upgraded", "downgraded", "cancelled", "reactivated"]
+      - name: plan
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["pro", "business"]
+      - name: user_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+
+  - name: stg_experiment_assignments
+    description: "Which A/B test variant each user saw."
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+      - name: variant
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["control", "treatment"]

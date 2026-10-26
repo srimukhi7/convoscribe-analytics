@@ -1,0 +1,65 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw ConvoScribe tables, loaded as-is and never edited."
+    schema: raw
+
+    tables:
+      - name: raw_users
+        description: "One row per signup. Contains duplicate rows and messy emails."
+        columns:
+          - name: user_id
+            data_tests:
+              - not_null
+              - unique:
+                  config:
+                    severity: warn   # known issue: duplicates
+
+      - name: raw_workspaces
+        description: "One row per team workspace."
+
+      - name: raw_meetings
+        description: "One row per transcribed meeting. Has duplicates, bad durations, unknown users."
+        columns:
+          - name: meeting_id
+            data_tests:
+              - unique:
+                  config:
+                    severity: warn   # known issue: retried duplicates
+          - name: user_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'raw_users')
+                    field: user_id
+                  config:
+                    severity: warn   # known issue: unknown users
+
+      - name: raw_feature_events
+        description: "One row per AI feature use. Has duplicates and inconsistent event names."
+        columns:
+          - name: event_id
+            data_tests:
+              - unique:
+                  config:
+                    severity: warn
+          - name: event_name
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ["summary_viewed", "action_item_created", "transcript_shared", "ai_chat_used"]
+                  config:
+                    severity: warn   # known issue: inconsistent spellings
+
+      - name: raw_subscription_events
+        description: "One row per paid-plan change. Has retried duplicates."
+        columns:
+          - name: subscription_event_id
+            data_tests:
+              - unique:
+                  config:
+                    severity: warn
+
+      - name: raw_experiment_assignments
+        description: "One row per user placed into an A/B test variant."
