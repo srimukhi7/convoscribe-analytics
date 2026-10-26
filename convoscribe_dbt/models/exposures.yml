@@ -1,0 +1,22 @@
+version: 2
+
+exposures:
+  - name: convoscribe_dashboard
+    label: ConvoScribe Analytics Dashboard
+    type: dashboard
+    maturity: medium
+    url: https://convoscribe-analytics-srimukhi.streamlit.app
+    description: "Public Streamlit dashboard reading exported metric, quality and experiment tables."
+    depends_on:
+      - ref('metrics_mrr_monthly')
+      - ref('metrics_weekly_active_users')
+      - ref('metrics_activation')
+      - ref('metrics_conversion')
+      - ref('metrics_cohort_retention')
+      - ref('exp_variant_results')
+      - ref('exp_readout')
+      - ref('dq_daily_anomalies')
+      - ref('dq_scorecard')
+      - ref('dq_source_freshness')
+    owner:
+      name: Srimukhi Sridhar Paidikondala
